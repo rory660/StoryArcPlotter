@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import sys
 
 def getSentimentData(filename):
+	print("Importing sentiment Data...")
 	sentiment = {}
 	with open (filename , "r") as sentimentData:
 		for item in [x.split("	") for x in sentimentData]:
@@ -12,6 +13,7 @@ def getSentimentData(filename):
 	return sentiment
 
 def loadPage(url):
+	print("Loading Play...")
 	page = str(request.urlopen(url).read())
 	page = page.split("\\n")
 
@@ -20,6 +22,7 @@ def loadPage(url):
 	return page
 
 def calculatePageSentiment(page, sentiment, window = 100):
+	print("Analysing Play...")
 	pageSentiment = []
 	index = window//2
 	while index < len(page)-window//2:
@@ -58,7 +61,7 @@ def calculateCumulativePageSentiment(pageSentiment):
 	return pageSentimentCumulative
 
 def plotData(pageSentiment, pageSentiment2):
-
+	print("Plotting Data...")
 	if (max(pageSentiment) > -min(pageSentiment)):
 		yScale = max(pageSentiment)*1.1
 	else:
@@ -94,6 +97,9 @@ def analysePlay(url, sentimentFilepath):
 	playSentimentCumulative = calculateCumulativePageSentiment(playSentiment)
 	plotData(playSentiment, playSentimentCumulative)
 
-print (sys.argv)
-
-analysePlay("http://shakespeare.mit.edu/macbeth/full.html", "AFINN-111.txt")
+if len(sys.argv) > 1 and "shakespeare.mit.edu" in sys.argv[1]:
+	analysePlay(sys.argv[1], "AFINN-111.txt")
+else:
+	print("Please enter the url of a shakespeare play in the format: http://shakespeare.mit.edu/[Play Title]/full.html")
+	playUrl = input("> ")
+	analysePlay(playUrl, "AFINN-111.txt")
