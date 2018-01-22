@@ -13,4 +13,4 @@ When running the script, pass the url of a Shakespeare play hosted at [shakespea
 `http://shakespeare.mit.edu/[Play Title]/full.html`
 
 ### Notes  
-This script makes use of the AFINN sentiment dataset by Finn Årup Nielsen, under the "Open Database License (ODbL) v1.0"
+This script makes use of the AFINN sentiment dataset by Finn Årup Nielsen, under the ["Open Database License (ODbL) v1.0"](http://www.opendatacommons.org/licenses/odbl/1.0/)
