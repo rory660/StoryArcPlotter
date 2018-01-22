@@ -9,5 +9,5 @@ Requirements:
 + matplotlib  
 + An internet connection  
 
-When running the script, pass the url of a Shakespeare play hosted at [shakespeare.mit.edu](http://shakespeare.mit.edu/) in the format:  
+When running the script, pass the url of a Shakespeare play hosted at [shakespeare.mit.edu](http://shakespeare.mit.edu/) as an argument in the format:  
 `http://shakespeare.mit.edu/[Play Title]/full.html`
