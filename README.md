@@ -11,3 +11,6 @@ Requirements:
 
 When running the script, pass the url of a Shakespeare play hosted at [shakespeare.mit.edu](http://shakespeare.mit.edu/) as an argument in the format:  
 `http://shakespeare.mit.edu/[Play Title]/full.html`
+
+### Notes  
+This script makes use of the AFINN sentiment dataset by Finn Årup Nielsen, under the "Open Database License (ODbL) v1.0"
