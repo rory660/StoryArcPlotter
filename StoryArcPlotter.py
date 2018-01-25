@@ -9,7 +9,7 @@ def getSentimentData(filename):
 	sentiment = {}
 	with open (filename , "r") as sentimentData:
 		for item in [x.split("	") for x in sentimentData]:
-			sentiment[item[0]] = item[1].replace("\n" , "")
+			sentiment[item[0]] = int(item[1].replace("\n" , ""))
 	return sentiment
 
 def loadPage(url):
@@ -34,7 +34,7 @@ def calculatePageSentiment(page, sentiment, window = 100):
 					word = word.replace(char, "")
 				if word in sentiment.keys():
 					wordCount+=1
-					windowSentiment += int(sentiment[word])
+					windowSentiment += sentiment[word]
 		if wordCount == 0:
 			wordCount = 1
 		pageSentiment.append(windowSentiment/wordCount / window)
@@ -72,6 +72,7 @@ def plotData(pageSentiment, pageSentiment2):
 	else:
 		yScale2 = -min(pageSentiment2)*1.1
 
+	average = sum(pageSentiment)/len(pageSentiment)
 	average2 = sum(pageSentiment2)/len(pageSentiment2)
 	if max(pageSentiment2) - average2 > average2 - min(pageSentiment2):
 		yScale2 = (max(pageSentiment2) - average2) * 1.1
@@ -88,18 +89,57 @@ def plotData(pageSentiment, pageSentiment2):
 	plt.ylabel("Individual")
 	plt.ylim([-yScale,yScale])
 	plt.show()
+def averageData(pageSentiment):
+	average = sum(pageSentiment)/len(pageSentiment)
+	pageSentiment = [x-average for x in pageSentiment]
+	if max(pageSentiment) > min(pageSentiment):
+		return [x/max(pageSentiment) for x in pageSentiment]
+	else:
+		return [x/(-min(pageSentiment)) for x in pageSentiment]
+	
+def averageDataCumulative(pageSentiment):
+	pageSentiment2 = pageSentiment[0]
+	pageSentiment2 = [sum(pageSentiment2)+x for x in pageSentiment[1:]]
+	if max(pageSentiment2) > min(pageSentiment2):
+		return [x/max(pageSentiment2) for x in pageSentiment2]
+	else:
+		return [x/(-min(pageSentiment2)) for x in pageSentiment2]
 
 def analysePlay(url, sentimentFilepath):
 	sentimentDict = getSentimentData(sentimentFilepath)
 	play = loadPage(url)
-	playSentiment = calculatePageSentiment(play, sentimentDict)
+	playSentiment = calculatePageSentiment(play, sentimentDict, window = 500)
 	playSentiment = ScaleData(playSentiment)
 	playSentimentCumulative = calculateCumulativePageSentiment(playSentiment)
+	playSentiment = averageData(playSentiment)
+	playSentimentCumulative = averageData(playSentimentCumulative)
 	plotData(playSentiment, playSentimentCumulative)
 
-if len(sys.argv) > 1 and "shakespeare.mit.edu" in sys.argv[1]:
-	analysePlay(sys.argv[1], "AFINN-111.txt")
-else:
-	print("Please enter the url of a shakespeare play in the format: http://shakespeare.mit.edu/[Play Title]/full.html")
-	playUrl = input("> ")
-	analysePlay(playUrl, "AFINN-111.txt")
+def getPlayLinks():
+	page = str(request.urlopen("http://shakespeare.mit.edu/").read())
+	links = ["http://shakespeare.mit.edu/"+x.split('/')[0]+"/full.html" for x in page.split('a href="') if "index.html" in x]
+	linkText = [x.split('>')[1].split("<")[0].replace("\\n","").replace("\\","") for x in page.split('a href="') if "index.html" in x]
+
+	return(dict(zip(linkText, links)))
+
+def main():
+	links = getPlayLinks()
+	choice = None
+	print(("\n".join([str(list(links.keys()).index(x)+1)+". "+x for x in links.keys()]))+"\nChoose a play by entering its number.")
+	selecting = True
+	while selecting:
+		choice = input("> ")
+		try:
+			print (choice)
+			choice = int(choice.strip())
+			selecting = False
+		except:
+			print("Enter a number corresponding to your play choice.")
+	analysePlay(list(links.values())[choice-1],"AFINN-111.txt")
+main()
+# if len(sys.argv) > 1 and "shakespeare.mit.edu" in sys.argv[1]:
+# 	analysePlay(sys.argv[1], "AFINN-111.txt")
+# else:
+# 	print("Please enter the url of a shakespeare play in the format: http://shakespeare.mit.edu/[Play Title]/full.html")
+# 	playUrl = input("> ")
+# 	analysePlay(playUrl, "AFINN-111.txt")
