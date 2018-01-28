@@ -9,7 +9,7 @@ Requirements:
 + matplotlib  
 + An internet connection  
 
-When running the script, choose a number corresponding to the shakespeare plays shown by the program. A graph will then be generated.
+When running the script, choose a number corresponding to one of the shakespeare plays shown by the program. A graph will then be generated.
 
 ### Notes  
 This script makes use of the AFINN sentiment dataset by Finn Årup Nielsen, under the ["Open Database License (ODbL) v1.0"](http://www.opendatacommons.org/licenses/odbl/1.0/)
