@@ -200,21 +200,24 @@ def ui():
 		try:
 			print (choice)
 			choice = int(choice.strip())
-			selecting = False
+			if choice > 0 and choice < len(links.keys())+1:
+				selecting = False
 		except:
+			pass
+		if selecting:
 			print("Enter a number corresponding to your play choice.")
 
 	playSentiment = analysePlay(list(links.values())[choice-1],"AFINN/AFINN-111.txt")
 	playName = list(links.keys())[choice-1]
-	if (input("Output data as a CSV file? y/n\n>").lower().strip() == "y"):
+	if (input("Output data as a CSV file? y/n\n> ").lower().strip() == "y"):
 		writeCSV(playSentiment, playName)
 	if plottable:
-		if (input("Generate a Graph? y/n\n>").lower().strip() == "y"):
+		if (input("Generate a Graph? y/n\n> ").lower().strip() == "y"):
 			plotData(playSentiment, playName)
-	if (input("Get important lines? y/n\n>").lower().strip() == "y"):
+	if (input("Get important lines? y/n\n> ").lower().strip() == "y"):
 		lines = getImportantLines(playSentiment)
-		print("Potentially important lines: \nLine: "+"\nLine ".join([str(x) for x in lines]))
-		if (input("Export lines to .txt file? y/n\n>").lower().strip() == "y"):
+		print("Potentially important lines: \nLine "+"\nLine ".join([str(x) for x in lines]))
+		if (input("Export lines to .txt file? y/n\n> ").lower().strip() == "y"):
 			exportLines(lines, playName)
 
 ui()
